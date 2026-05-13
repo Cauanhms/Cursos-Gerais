@@ -223,13 +223,34 @@ def simular_investimento():
 
     try:
 
-        # Pega o valor digitado
+        # =================================================
+        # Pega o valor digitado pelo usuário
+        # =================================================
+
         valor = float(campo_valor.get())
 
+        # =================================================
         # Pega o investimento escolhido
+        # =================================================
+
         tipo = combo_investimento.get()
 
-        # Taxas fictícias
+        # =================================================
+        # Pega o tempo digitado
+        # =================================================
+
+        tempo = int(campo_tempo.get())
+
+        # =================================================
+        # Pega o período escolhido
+        # =================================================
+
+        periodo = combo_periodo.get()
+
+        # =================================================
+        # Taxas fictícias mensais
+        # =================================================
+
         taxas = {
             "Poupança": 0.005,
             "CDB": 0.010,
@@ -237,23 +258,65 @@ def simular_investimento():
             "Tesouro Direto": 0.015
         }
 
+        # =================================================
         # Seleciona a taxa correta
+        # =================================================
+
         taxa = taxas[tipo]
 
-        # Fórmula de juros compostos
-        montante = valor * ((1 + taxa) ** 12)
+        # =================================================
+        # Conversão do tempo
+        # =================================================
+        #
+        # Como a taxa está em meses,
+        # precisamos converter:
+        #
+        # dias -> meses
+        # anos -> meses
+        #
 
-        # Atualiza o texto do resultado
+        if periodo == "Dias":
+
+            meses = tempo / 30
+
+        elif periodo == "Meses":
+
+            meses = tempo
+
+        elif periodo == "Anos":
+
+            meses = tempo * 12
+
+        # =================================================
+        # Fórmula de juros compostos
+        # =================================================
+
+        montante = valor * ((1 + taxa) ** meses)
+
+        # =================================================
+        # Atualiza o resultado na tela
+        # =================================================
+
         label_resultado.config(
-            text=f"Valor após 12 meses:\nR$ {montante:.2f}"
+
+            text=
+            f"Valor investido: R$ {valor:.2f}\n\n"
+            f"Tipo: {tipo}\n"
+            f"Período: {tempo} {periodo}\n\n"
+            f"Valor final:\nR$ {montante:.2f}"
         )
 
     except:
 
-        # Mostra erro se o usuário digitar algo inválido
+        # =================================================
+        # Mostra erro caso algo inválido seja digitado
+        # =================================================
+
         messagebox.showerror(
+
             "Erro",
-            "Digite um valor válido!"
+
+            "Digite valores válidos!"
         )
 
 
@@ -265,9 +328,9 @@ janela = tk.Tk()
 
 janela.title("Simulador de Investimentos - Sicredi")
 
-janela.geometry("650x650")
+janela.geometry("700x800")
 
-janela.minsize(500, 500)
+janela.minsize(550, 600)
 
 janela.resizable(True, True)
 
@@ -304,7 +367,7 @@ texto = tk.Label(
 
     janela,
 
-    text="Digite um valor e escolha um investimento",
+    text="Digite um valor, escolha o investimento e o período.",
 
     font=("Arial", 11),
 
@@ -392,6 +455,82 @@ combo_investimento.current(0)
 
 
 # =========================================================
+#                 LABEL TEMPO
+# =========================================================
+
+label_tempo = tk.Label(
+
+    janela,
+
+    text="Tempo do Investimento:",
+
+    font=("Arial", 12),
+
+    bg="white"
+)
+
+label_tempo.pack()
+
+
+# =========================================================
+#                CAMPO TEMPO
+# =========================================================
+
+campo_tempo = tk.Entry(
+
+    janela,
+
+    font=("Arial", 12),
+
+    width=25
+)
+
+campo_tempo.pack(pady=10)
+
+
+# =========================================================
+#               LABEL PERÍODO
+# =========================================================
+
+label_periodo = tk.Label(
+
+    janela,
+
+    text="Escolha o período:",
+
+    font=("Arial", 12),
+
+    bg="white"
+)
+
+label_periodo.pack()
+
+
+# =========================================================
+#             COMBOBOX PERÍODO
+# =========================================================
+
+combo_periodo = ttk.Combobox(
+
+    janela,
+
+    values=[
+        "Dias",
+        "Meses",
+        "Anos"
+    ],
+
+    font=("Arial", 11),
+
+    width=22
+)
+
+combo_periodo.pack(pady=10)
+
+combo_periodo.current(1)
+
+
+# =========================================================
 #                     BOTÃO
 # =========================================================
 
@@ -429,7 +568,9 @@ label_resultado = tk.Label(
 
     bg="white",
 
-    fg="#005c36"
+    fg="#005c36",
+
+    justify="center"
 )
 
 label_resultado.pack(pady=20)
@@ -451,9 +592,13 @@ frame_explicacao = tk.Frame(
 )
 
 frame_explicacao.pack(
+
     pady=20,
+
     padx=20,
+
     fill="both",
+
     expand=True
 )
 
@@ -487,6 +632,7 @@ explicacao = tk.Label(
     frame_explicacao,
 
     text=
+
     "• Poupança:\n"
     "Baixo risco e baixo rendimento.\n\n"
 
@@ -497,7 +643,16 @@ explicacao = tk.Label(
     "Isento de imposto de renda.\n\n"
 
     "• Tesouro Direto:\n"
-    "Títulos públicos do governo.",
+    "Títulos públicos do governo.\n\n"
+
+    "• Dias:\n"
+    "Ideal para simulações curtas.\n\n"
+
+    "• Meses:\n"
+    "Período padrão de investimentos.\n\n"
+
+    "• Anos:\n"
+    "Usado para investimentos de longo prazo.",
 
     font=("Arial", 10),
 
@@ -505,7 +660,7 @@ explicacao = tk.Label(
 
     justify="left",
 
-    wraplength=550,
+    wraplength=600,
 
     padx=15,
 
