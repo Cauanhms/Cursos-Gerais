@@ -17,6 +17,7 @@ produto["quantidade"] = 10
 print(produto)
 
 print("==" * 25,)
+
 #Criando o 2º Dicionário
 carro = {
     "marca": "Ford",
